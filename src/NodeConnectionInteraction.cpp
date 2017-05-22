@@ -6,6 +6,8 @@
 #include "DataModelRegistry.hpp"
 #include "FlowScene.hpp"
 
+#include <QDebug>
+
 using QtNodes::NodeConnectionInteraction;
 using QtNodes::PortType;
 using QtNodes::PortIndex;
@@ -82,14 +84,14 @@ tryConnect() const
 {
   // 1) Check conditions from 'canConnect'
   PortIndex portIndex = INVALID;
-  bool typeConversionNeeded = false; 
+  bool typeConversionNeeded = false;
   std::unique_ptr<NodeDataModel> typeConverterModel;
 
   if (!canConnect(portIndex, typeConversionNeeded, typeConverterModel))
   {
     return false;
   }
-  
+
   /// 1.5) If the connection is possible but a type conversion is needed, add a converter node to the scene, and connect it properly
   if (typeConversionNeeded)
   {
@@ -103,7 +105,7 @@ tryConnect() const
 
     //Creating the converter node
     Node& converterNode = _scene->createNode(std::move(typeConverterModel));
-    
+
     //Calculate and set the converter node's position
     auto converterNodePos = NodeGeometry::calculateNodePositionBetweenNodePorts(portIndex, requiredPort, _node, outNodePortIndex, connectedPort, outNode, converterNode);
     converterNode.nodeGraphicsObject().setPos(converterNodePos);
@@ -250,7 +252,16 @@ nodePortIsEmpty(PortType portType, PortIndex portIndex) const
 
   auto const & entries = nodeState.getEntries(portType);
 
-  if (entries[portIndex].empty()) return true;
+  const auto inPolicy = _node->nodeDataModel()->portInConnectionPolicy(portIndex);
+  if (inPolicy == NodeDataModel::ConnectionPolicy::Many) {
+    return true;
+  } else {
+    if (entries[portIndex].empty()) return true;
+  }
+/*
+  qInfo() << "nb possible : " << _node->nodeDataModel()->portInConnectionPolicy(portIndex);
+  qInfo() << "count : " << entries[portIndex].size();
+*/
 
   const auto outPolicy = _node->nodeDataModel()->portOutConnectionPolicy(portIndex);
   return ( portType == PortType::Out && outPolicy == NodeDataModel::ConnectionPolicy::Many);

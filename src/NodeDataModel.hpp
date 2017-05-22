@@ -89,6 +89,13 @@ public:
     return ConnectionPolicy::Many;
   }
 
+  virtual
+  ConnectionPolicy
+  portInConnectionPolicy(PortIndex) const
+  {
+    return ConnectionPolicy::Many;
+  }
+
   NodeStyle const&
   nodeStyle() const;
 

@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include <QtCore/QMargins>
+#include <QDebug>
 
 #include "StyleCollection.hpp"
 #include "PortType.hpp"
@@ -45,12 +46,15 @@ paint(QPainter* painter,
   drawFilledConnectionPoints(painter, geom, state, model);
 
   drawModelName(painter, geom, state, model);
+  qInfo() << "Print";
 
-  drawEntryLabels(painter, geom, state, model);
+  if (true) { //Remplacer par isReduced ou je sais pas quoi
+    drawEntryLabels(painter, geom, state, model);
 
-  drawResizeRect(painter, geom, model);
+    drawResizeRect(painter, geom, model);
 
-  drawValidationRect(painter, geom, model, graphicsObject);
+    drawValidationRect(painter, geom, model, graphicsObject);
+  }
 
   /// call custom painter
   if (auto painterDelegate = model->painterDelegate())
