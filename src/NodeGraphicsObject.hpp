@@ -54,6 +54,9 @@ public:
   void
   lock(bool locked);
 
+  QWidget *
+  getWidget();
+
 protected:
   void
   paint(QPainter*                       painter,

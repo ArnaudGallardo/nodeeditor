@@ -1,6 +1,9 @@
 #include "Node.hpp"
 
 #include <QtCore/QObject>
+#include <QDebug>
+#include <QLineEdit>
+#include <QLabel>
 
 #include <iostream>
 
@@ -59,6 +62,26 @@ save() const
   obj["x"] = _nodeGraphicsObject->pos().x();
   obj["y"] = _nodeGraphicsObject->pos().y();
   nodeJson["position"] = obj;
+
+  QWidget * w = _nodeGraphicsObject->getWidget();
+
+  //TODO : Remplacer QLineEdit par notre truc
+  QList<QLineEdit *> allLineEdits = w->findChildren<QLineEdit *>();
+  //QList<QLabel *> allLabels = w->findChildren<QLabel *>();
+  QJsonObject content;
+
+  if (allLineEdits.count() > 0){
+      for (int i =0; i < allLineEdits.count(); i++)
+      {
+          QString val = allLineEdits.at(i)->text();
+          QString name = allLineEdits.at(i)->objectName();
+          //allLabels.at(i)->text();
+          content[name] = val;
+          qInfo() << "SAVE" << name << val;
+      }
+  }
+
+  nodeJson["data"] = content;
 
   return nodeJson;
 }

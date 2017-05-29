@@ -82,7 +82,7 @@ public:
 
   void
   setNodePosition(Node& node, const QPointF& pos) const;
-  
+
   QSizeF
   getNodeSize(const Node& node) const;
 public:
@@ -107,10 +107,10 @@ public:
   void
   load();
 
-  QByteArray 
+  QByteArray
   saveToMemory() const;
 
-  void 
+  void
   loadFromMemory(const QByteArray& data);
 
   signals:

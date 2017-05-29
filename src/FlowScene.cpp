@@ -15,6 +15,7 @@
 #include <QtCore/QJsonArray>
 
 #include <QDebug>
+#include <QDir>
 
 #include "Node.hpp"
 #include "NodeGraphicsObject.hpp"

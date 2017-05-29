@@ -115,6 +115,13 @@ embedQWidget()
   }
 }
 
+QWidget *
+NodeGraphicsObject::
+getWidget()
+{
+  return _proxyWidget->widget();
+}
+
 
 QRectF
 NodeGraphicsObject::
