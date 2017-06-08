@@ -32,6 +32,8 @@ public:
 
   QColor NormalBoundaryColor;
   QColor SelectedBoundaryColor;
+  QColor ValidatedBoundaryColor;
+  QColor NotValidatedBoundaryColor;
   QColor GradientColor0;
   QColor GradientColor1;
   QColor GradientColor2;
@@ -48,6 +50,7 @@ public:
 
   float PenWidth;
   float HoveredPenWidth;
+  float ValidatedPenWidth;
 
   float ConnectionPointDiameter;
 

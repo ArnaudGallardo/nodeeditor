@@ -46,7 +46,6 @@ paint(QPainter* painter,
   drawFilledConnectionPoints(painter, geom, state, model);
 
   drawModelName(painter, geom, state, model);
-  qInfo() << "Print";
 
   if (true) { //Remplacer par isReduced ou je sais pas quoi
     drawEntryLabels(painter, geom, state, model);
@@ -80,6 +79,16 @@ drawNodeRect(QPainter* painter,
   if (geom.hovered())
   {
     QPen p(color, nodeStyle.HoveredPenWidth);
+    painter->setPen(p);
+  }
+  else if (geom.validated() > 0)
+  {
+    QPen p(nodeStyle.ValidatedBoundaryColor, nodeStyle.ValidatedPenWidth);
+    painter->setPen(p);
+  }
+  else if (geom.validated() < 0)
+  {
+    QPen p(nodeStyle.NotValidatedBoundaryColor, nodeStyle.ValidatedPenWidth);
     painter->setPen(p);
   }
   else

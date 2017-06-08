@@ -5,6 +5,7 @@
 
 #include <QtWidgets/QtWidgets>
 #include <QtWidgets/QGraphicsEffect>
+#include <QDebug>
 
 #include "ConnectionGraphicsObject.hpp"
 #include "ConnectionState.hpp"
@@ -119,7 +120,12 @@ QWidget *
 NodeGraphicsObject::
 getWidget()
 {
-  return _proxyWidget->widget();
+  if (_proxyWidget != NULL)
+  {
+    return _proxyWidget->widget();
+  }
+  qInfo() << "EMPTY";
+  return NULL;
 }
 
 

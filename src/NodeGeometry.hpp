@@ -59,6 +59,12 @@ public:
   void
   setHovered(unsigned int h) { _hovered = h; }
 
+  int
+  validated() const { return _validated; }
+
+  void
+  setValidated(unsigned int v) { _validated = v; }
+
   unsigned int
   nSources() const { return _nSources; }
 
@@ -112,9 +118,9 @@ public:
 
   unsigned int
   validationWidth() const;
-  
-  static 
-  QPointF 
+
+  static
+  QPointF
   calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex, PortType targetPort, Node* targetNode,
                                         PortIndex sourcePortIndex, PortType sourcePort, Node* sourceNode,
                                         Node& newNode);
@@ -145,6 +151,7 @@ private:
   unsigned int _spacing;
 
   bool _hovered;
+  int _validated = 0; //0 if nothing, 1 if good, -1 if not good 
 
   unsigned int _nSources;
   unsigned int _nSinks;

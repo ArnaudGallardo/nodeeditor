@@ -112,6 +112,8 @@ loadJsonFromByteArray(QByteArray const &byteArray)
 
   NODE_STYLE_READ_COLOR(obj, NormalBoundaryColor);
   NODE_STYLE_READ_COLOR(obj, SelectedBoundaryColor);
+  NODE_STYLE_READ_COLOR(obj, ValidatedBoundaryColor);
+  NODE_STYLE_READ_COLOR(obj, NotValidatedBoundaryColor);
   NODE_STYLE_READ_COLOR(obj, GradientColor0);
   NODE_STYLE_READ_COLOR(obj, GradientColor1);
   NODE_STYLE_READ_COLOR(obj, GradientColor2);
@@ -126,6 +128,7 @@ loadJsonFromByteArray(QByteArray const &byteArray)
 
   NODE_STYLE_READ_FLOAT(obj, PenWidth);
   NODE_STYLE_READ_FLOAT(obj, HoveredPenWidth);
+  NODE_STYLE_READ_FLOAT(obj, ValidatedPenWidth);
   NODE_STYLE_READ_FLOAT(obj, ConnectionPointDiameter);
 
   NODE_STYLE_READ_FLOAT(obj, Opacity);
