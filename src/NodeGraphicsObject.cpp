@@ -237,6 +237,7 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
         // start dragging existing connection
         if (!connections.empty() && portToCheck == PortType::In)
         {
+          qInfo() << "Remove existing";
           auto con = connections.begin()->second;
 
           NodeConnectionInteraction interaction(_node, *con, _scene);
@@ -245,14 +246,16 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
         }
         else // initialize new Connection
         {
+          qInfo() << "Start new connection";
           const auto outPolicy = _node.nodeDataModel()->portOutConnectionPolicy(portIndex);
           if (!connections.empty() &&
               portToCheck == PortType::Out &&
               outPolicy == NodeDataModel::ConnectionPolicy::One)
           {
+            qInfo() << "Delete new connection";
             _scene.deleteConnection( *connections.begin()->second );
           }
-
+          qInfo() << "Create new connection";
           // todo add to FlowScene
           auto connection = _scene.createConnection(portToCheck,
                                                     _node,

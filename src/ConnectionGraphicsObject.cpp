@@ -20,6 +20,8 @@
 
 #include "Node.hpp"
 
+#include <QDebug>
+
 using QtNodes::ConnectionGraphicsObject;
 using QtNodes::Connection;
 using QtNodes::FlowScene;
@@ -217,13 +219,61 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
   NodeConnectionInteraction interaction(*node, _connection, _scene);
 
-  if (node && interaction.tryConnect())
+  if (!node && _connection.getPortIndex(PortType::In) >= 0)
+  {
+    QString modelName = _connection.dataType().id;
+    qInfo() << modelName;
+
+    auto type = _scene.registry().create(modelName);
+    qInfo() << "before";
+    if (type)
+    {
+      qInfo() << "in";
+      auto nodeCrea = &(_scene.createNode(std::move(type)));
+      qInfo() << "node created";
+
+      //We need to put the node right under the compatible port
+      NodeDataModel *ndm = nodeCrea->nodeDataModel();
+      int nbp = ndm->nPorts(PortType::Out);
+      int pid = 0;
+      for(int i=0;i<nbp;i++)
+      {
+        if (ndm->dataType(PortType::Out,i).id == _connection.dataType().id)
+          pid = i;
+      }
+
+      QPointF pos = nodeCrea->nodeGeometry().portScenePosition(pid,PortType::Out);
+      qInfo() << pos;
+      QPointF evPos = event->scenePos();
+      QPointF newPos = QPointF(evPos.x()-pos.x(),evPos.y()-pos.y());
+      nodeCrea->nodeGraphicsObject().setPos(newPos);
+
+      qInfo() << "node set pos";
+
+      NodeConnectionInteraction interactionCrea(*nodeCrea, _connection, _scene);
+      qInfo() << "interaction created";
+      qInfo() << nodeCrea << interactionCrea.tryConnect();
+      /*
+      if (interactionCrea.tryConnect())
+      {
+        qInfo() << "tryConnect ok";
+        nodeCrea->resetReactionToConnection();
+        qInfo() << "Created!";
+      }
+      */
+    }
+    else
+    {
+      _scene.deleteConnection(_connection);
+    }
+  }
+  else if (node && interaction.tryConnect())
   {
     node->resetReactionToConnection();
+    qInfo() << "Created!";
   }
   else if (_connection.connectionState().requiresPort())
   {
-
     _scene.deleteConnection(_connection);
   }
 }

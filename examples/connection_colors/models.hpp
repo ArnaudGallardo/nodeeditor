@@ -57,12 +57,12 @@ public:
   QString
   caption() const override
   {
-    return QString("Naive Data Model");
+    return QString("My Node Data");
   }
 
   QString
   name() const override
-  { return QString("NaiveDataModel"); }
+  { return QString("MyNodeData"); }
 
   std::unique_ptr<NodeDataModel>
   clone() const override

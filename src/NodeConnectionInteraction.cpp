@@ -37,6 +37,7 @@ canConnect(PortIndex &portIndex, bool& typeConversionNeeded, std::unique_ptr<Nod
 
   if (requiredPort == PortType::None)
   {
+    qInfo() << "CanConnect" << "1";
     return false;
   }
 
@@ -49,6 +50,7 @@ canConnect(PortIndex &portIndex, bool& typeConversionNeeded, std::unique_ptr<Nod
 
   if (portIndex == INVALID)
   {
+    qInfo() << "CanConnect" << "2";
     return false;
   }
 
@@ -56,7 +58,10 @@ canConnect(PortIndex &portIndex, bool& typeConversionNeeded, std::unique_ptr<Nod
 
   // port should be empty
   if (!nodePortIsEmpty(requiredPort, portIndex))
+  {
+    qInfo() << "CanConnect" << "3";
     return false;
+  }
 
   // 4) Connection type equals node port type, or there is a registered type conversion that can translate between the two
 
