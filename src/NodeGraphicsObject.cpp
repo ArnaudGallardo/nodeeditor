@@ -234,6 +234,7 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
         std::unordered_map<QUuid, Connection*> connections =
           nodeState.connections(portToCheck, portIndex);
 
+#ifndef ALTAG
         // start dragging existing connection
         if (!connections.empty() && portToCheck == PortType::In)
         {
@@ -246,6 +247,7 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
         }
         else // initialize new Connection
         {
+#endif
           qInfo() << "Start new connection";
           const auto outPolicy = _node.nodeDataModel()->portOutConnectionPolicy(portIndex);
           if (!connections.empty() &&
@@ -266,7 +268,10 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
                                           *connection);
 
           connection->getConnectionGraphicsObject().grabMouse();
+
+#ifndef ALTAG
         }
+#endif
       }
     };
 

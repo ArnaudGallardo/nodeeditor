@@ -63,6 +63,12 @@ canConnect(PortIndex &portIndex, bool& typeConversionNeeded, std::unique_ptr<Nod
     return false;
   }
 
+  //We might need to add this
+  if (requiredPort == PortType::In)
+    qInfo() << "In" << (_node->nodeDataModel()->portInConnectionPolicy(portIndex) == NodeDataModel::ConnectionPolicy::Many);
+  else
+    qInfo() << "Out" << (_node->nodeDataModel()->portOutConnectionPolicy(portIndex) == NodeDataModel::ConnectionPolicy::Many);
+
   // 4) Connection type equals node port type, or there is a registered type conversion that can translate between the two
 
   auto connectionDataType = _connection->dataType();

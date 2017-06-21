@@ -219,13 +219,18 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
   NodeConnectionInteraction interaction(*node, _connection, _scene);
 
-  if (!node && _connection.getPortIndex(PortType::In) >= 0)
+  bool altag = false;
+#ifdef ALTAG
+  altag=true;
+#endif
+
+  if (altag && !node && _connection.requiredPort() == PortType::Out)
   {
     QString modelName = _connection.dataType().id;
     qInfo() << modelName;
 
     auto type = _scene.registry().create(modelName);
-    qInfo() << "before";
+
     if (type)
     {
       qInfo() << "in";
