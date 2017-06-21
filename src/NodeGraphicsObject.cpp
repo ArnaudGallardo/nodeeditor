@@ -251,6 +251,7 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
 #endif
           //qInfo() << "Start new connection";
           const auto outPolicy = _node.nodeDataModel()->portOutConnectionPolicy(portIndex);
+          const auto inPolicy = _node.nodeDataModel()->portInConnectionPolicy(portIndex);
           if (!connections.empty() &&
               portToCheck == PortType::Out &&
               outPolicy == NodeDataModel::ConnectionPolicy::One)
@@ -258,19 +259,26 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
             //qInfo() << "Delete new connection";
             _scene.deleteConnection( *connections.begin()->second );
           }
-          //qInfo() << "Create new connection";
-          // todo add to FlowScene
-          auto connection = _scene.createConnection(portToCheck,
-                                                    _node,
-                                                    portIndex);
 
-          _node.nodeState().setConnection(portToCheck,
-                                          portIndex,
-                                          *connection);
+          //Is there already a connection
+          std::unordered_map<QUuid, Connection*> tmpConnections = _node.nodeState().connections(portToCheck,portIndex);
+          bool alreadyTaken = (tmpConnections.size() > 0);
 
-          connection->getConnectionGraphicsObject().grabMouse();
-          //TODO: Find a better cursor ?
-          QApplication::setOverrideCursor(Qt::DragLinkCursor);
+          if (portToCheck == PortType::In &&
+              (inPolicy == NodeDataModel::ConnectionPolicy::Many || !alreadyTaken))
+          {
+            auto connection = _scene.createConnection(portToCheck,
+                                                      _node,
+                                                      portIndex);
+
+            _node.nodeState().setConnection(portToCheck,
+                                            portIndex,
+                                            *connection);
+
+            connection->getConnectionGraphicsObject().grabMouse();
+            //TODO: Find a better cursor ?
+            QApplication::setOverrideCursor(Qt::DragLinkCursor);
+          }
 #ifndef ALTAG
         }
 #endif

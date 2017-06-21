@@ -139,6 +139,14 @@ public:
     //
   }
 
+  ConnectionPolicy
+  portInConnectionPolicy(QtNodes::PortIndex pi) const override
+  {
+    if (pi == 0)
+      return ConnectionPolicy::Many;
+    return ConnectionPolicy::One;
+  }
+
   QWidget *
   embeddedWidget() override { return nullptr; }
 };

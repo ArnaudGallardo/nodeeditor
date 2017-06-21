@@ -230,7 +230,7 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   {
     QString modelName = _connection.dataType().id;
     //qInfo() << modelName;
-
+    
     emit _scene.beforeCreatingNode(modelName);
 
     if(!_scene.createNodeOnDrop(modelName,_connection, event->scenePos()))
