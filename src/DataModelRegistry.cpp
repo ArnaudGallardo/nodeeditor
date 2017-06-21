@@ -2,6 +2,7 @@
 
 #include <QtCore/QFile>
 #include <QtWidgets/QMessageBox>
+#include <QDebug>
 
 using QtNodes::DataModelRegistry;
 using QtNodes::NodeDataModel;

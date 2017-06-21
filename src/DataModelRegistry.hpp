@@ -16,9 +16,8 @@ namespace QtNodes
 /// Class uses map for storing models (name, model)
 class NODE_EDITOR_PUBLIC DataModelRegistry
 {
-
 public:
-  
+
   using RegistryItemPtr             = std::unique_ptr<NodeDataModel>;
   using RegisteredModelsMap         = std::unordered_map<QString, RegistryItemPtr>;
   using RegisteredModelsCategoryMap = std::unordered_map<QString, QString>;
@@ -99,16 +98,17 @@ public:
 
   RegisteredModelsMap const &
   registeredModels() const;
-  
+
   RegisteredModelsCategoryMap const &
   registeredModelsCategoryAssociation() const;
-  
+
   CategoriesSet const &
   categories() const;
 
   std::unique_ptr<NodeDataModel>
   getTypeConverter(QString const &sourceTypeID,
                    QString const &destTypeID) const;
+
 
 private:
 

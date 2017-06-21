@@ -79,7 +79,7 @@ save() const
             QString name = allLineEdits.at(i)->objectName();
             //allLabels.at(i)->text();
             content[name] = val;
-            qInfo() << "SAVE" << name << val;
+            //qInfo() << "SAVE" << name << val;
         }
     }
 

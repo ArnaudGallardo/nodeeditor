@@ -12,6 +12,8 @@
 #include "Export.hpp"
 #include "DataModelRegistry.hpp"
 
+using QtNodes::NodeDataModel;
+
 namespace QtNodes
 {
 
@@ -96,6 +98,12 @@ public:
   std::vector<Node*>
   selectedNodes() const;
 
+  std::vector<Connection*>
+  selectedConnections() const;
+
+  void
+  deleteSelected();
+
 public:
 
   void
@@ -112,6 +120,9 @@ public:
 
   void
   loadFromMemory(const QByteArray& data);
+
+  bool
+  createNodeOnDrop(QString modelName, Connection& connection, QPointF evPos);
 
   signals:
 
@@ -143,6 +154,15 @@ public:
 
   void
   nodeHoverLeft(Node& n);
+
+  void
+  beforeCreatingNode(QString);
+
+  void
+  creatingRegNode(void *);
+
+  void
+  creatingNode(Node& node);
 
 private:
 

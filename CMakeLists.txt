@@ -29,6 +29,7 @@ find_package(Qt5 COMPONENTS
 add_definitions(${Qt5Widgets_DEFINITIONS})
 
 add_definitions(-DALTAG)
+set(AUTOMOC ON)
 
 set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 

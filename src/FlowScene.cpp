@@ -25,11 +25,13 @@
 
 #include "FlowItemInterface.hpp"
 #include "FlowView.hpp"
-#include "DataModelRegistry.hpp"
+
+#include "NodeConnectionInteraction.hpp"
 
 using QtNodes::FlowScene;
 using QtNodes::Node;
 using QtNodes::NodeGraphicsObject;
+using QtNodes::ConnectionGraphicsObject;
 using QtNodes::Connection;
 using QtNodes::DataModelRegistry;
 using QtNodes::NodeDataModel;
@@ -138,7 +140,13 @@ Node&
 FlowScene::
 createNode(std::unique_ptr<NodeDataModel> && dataModel)
 {
+  //qInfo() << "Emit creatingNode :" << dataModel->name() << dataModel.get();
+  emit creatingRegNode(dataModel.get());
+
   auto node = std::make_unique<Node>(std::move(dataModel));
+
+  emit creatingNode(*(node.get()));
+
   auto ngo  = std::make_unique<NodeGraphicsObject>(*this, *node);
 
   node->setGraphicsObject(std::move(ngo));
@@ -147,6 +155,7 @@ createNode(std::unique_ptr<NodeDataModel> && dataModel)
   _nodes[node->id()] = std::move(node);
 
   nodeCreated(*nodePtr);
+
   return *nodePtr;
 }
 
@@ -157,6 +166,7 @@ restoreNode(QJsonObject const& nodeJson)
 {
   QString modelName = nodeJson["model"].toObject()["name"].toString();
 
+  //emit beforeCreatingNode(modelName);
   auto dataModel = registry().create(modelName);
 
   if (!dataModel)
@@ -380,6 +390,28 @@ selectedNodes() const
   return ret;
 }
 
+std::vector<Connection*>
+FlowScene::
+selectedConnections() const
+{
+  QList<QGraphicsItem*> graphicsItems = selectedItems();
+
+  std::vector<Connection*> ret;
+  ret.reserve(graphicsItems.size());
+
+  for (QGraphicsItem* item : graphicsItems)
+  {
+    auto cgo = qgraphicsitem_cast<ConnectionGraphicsObject*>(item);
+
+    if (cgo != nullptr)
+    {
+      ret.push_back(&cgo->connection());
+    }
+  }
+
+  return ret;
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -509,6 +541,70 @@ loadFromMemory(const QByteArray& data)
   for (int i = 0; i < connectionJsonArray.size(); ++i)
   {
     restoreConnection(connectionJsonArray[i].toObject());
+  }
+}
+
+bool
+FlowScene::
+createNodeOnDrop(QString modelName, Connection& connection, QPointF evPos)
+{
+  //Copier fcnt de flow machin ici
+  auto type = registry().create(modelName);
+
+  if (type)
+  {
+    //qInfo() << "in" << type.get();
+    auto nodeCrea = &(createNode(std::move(type)));
+    //qInfo() << "node created";
+
+    //We need to put the node right under the compatible port
+    NodeDataModel *ndm = nodeCrea->nodeDataModel();
+    //qInfo() << "verif id :" << ndm;
+    int nbp = ndm->nPorts(PortType::Out);
+    int pid = 0;
+    for(int i=0;i<nbp;i++)
+    {
+      if (ndm->dataType(PortType::Out,i).id == connection.dataType().id)
+        pid = i;
+    }
+
+    QPointF pos = nodeCrea->nodeGeometry().portScenePosition(pid,PortType::Out);
+    //qInfo() << pos;
+    QPointF newPos = QPointF(evPos.x()-pos.x(),evPos.y()-pos.y());
+    nodeCrea->nodeGraphicsObject().setPos(newPos);
+
+    //qInfo() << "node set pos";
+
+    NodeConnectionInteraction interactionCrea(*nodeCrea, connection, *this);
+    //qInfo() << "interaction created";
+
+    if (interactionCrea.tryConnect())
+    {
+      //qInfo() << "tryConnect ok";
+      nodeCrea->resetReactionToConnection();
+      //qInfo() << "Created!";
+    }
+    return true;
+  }
+  return false;
+}
+
+void
+FlowScene::
+deleteSelected()
+{
+  std::vector<Connection*> connectionsToDelete = selectedConnections();
+
+  for (auto& connection : connectionsToDelete)
+  {
+    deleteConnection(*connection);
+  }
+
+  std::vector<Node*> nodesToDelete = selectedNodes();
+
+  for (auto& node : nodesToDelete)
+  {
+    removeNode(*node);
   }
 }
 

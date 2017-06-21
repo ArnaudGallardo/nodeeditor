@@ -37,7 +37,7 @@ canConnect(PortIndex &portIndex, bool& typeConversionNeeded, std::unique_ptr<Nod
 
   if (requiredPort == PortType::None)
   {
-    qInfo() << "CanConnect" << "1";
+    //qInfo() << "CanConnect" << "1";
     return false;
   }
 
@@ -50,7 +50,7 @@ canConnect(PortIndex &portIndex, bool& typeConversionNeeded, std::unique_ptr<Nod
 
   if (portIndex == INVALID)
   {
-    qInfo() << "CanConnect" << "2";
+    //qInfo() << "CanConnect" << "2";
     return false;
   }
 
@@ -59,16 +59,18 @@ canConnect(PortIndex &portIndex, bool& typeConversionNeeded, std::unique_ptr<Nod
   // port should be empty
   if (!nodePortIsEmpty(requiredPort, portIndex))
   {
-    qInfo() << "CanConnect" << "3";
+    //qInfo() << "CanConnect" << "3";
     return false;
   }
 
   //We might need to add this
+  /*
   if (requiredPort == PortType::In)
-    qInfo() << "In" << (_node->nodeDataModel()->portInConnectionPolicy(portIndex) == NodeDataModel::ConnectionPolicy::Many);
+    //qInfo() << "In" << (_node->nodeDataModel()->portInConnectionPolicy(portIndex) == NodeDataModel::ConnectionPolicy::Many);
   else
-    qInfo() << "Out" << (_node->nodeDataModel()->portOutConnectionPolicy(portIndex) == NodeDataModel::ConnectionPolicy::Many);
-
+    //qInfo() << "Out" << (_node->nodeDataModel()->portOutConnectionPolicy(portIndex) == NodeDataModel::ConnectionPolicy::Many);
+  */
+  
   // 4) Connection type equals node port type, or there is a registered type conversion that can translate between the two
 
   auto connectionDataType = _connection->dataType();
@@ -270,8 +272,8 @@ nodePortIsEmpty(PortType portType, PortIndex portIndex) const
     if (entries[portIndex].empty()) return true;
   }
 /*
-  qInfo() << "nb possible : " << _node->nodeDataModel()->portInConnectionPolicy(portIndex);
-  qInfo() << "count : " << entries[portIndex].size();
+  //qInfo() << "nb possible : " << _node->nodeDataModel()->portInConnectionPolicy(portIndex);
+  //qInfo() << "count : " << entries[portIndex].size();
 */
 
   const auto outPolicy = _node->nodeDataModel()->portOutConnectionPolicy(portIndex);

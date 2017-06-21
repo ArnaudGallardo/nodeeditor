@@ -5,6 +5,7 @@
 #include <QtWidgets/QGraphicsBlurEffect>
 #include <QtWidgets/QStyleOptionGraphicsItem>
 #include <QtWidgets/QGraphicsView>
+#include <QApplication>
 
 #include "FlowScene.hpp"
 
@@ -212,6 +213,7 @@ ConnectionGraphicsObject::
 mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
   ungrabMouse();
+  QApplication::restoreOverrideCursor();
   event->accept();
 
   auto node = locateNodeAt(event->scenePos(), _scene,
@@ -227,55 +229,17 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   if (altag && !node && _connection.requiredPort() == PortType::Out)
   {
     QString modelName = _connection.dataType().id;
-    qInfo() << modelName;
+    //qInfo() << modelName;
 
-    auto type = _scene.registry().create(modelName);
+    emit _scene.beforeCreatingNode(modelName);
 
-    if (type)
-    {
-      qInfo() << "in";
-      auto nodeCrea = &(_scene.createNode(std::move(type)));
-      qInfo() << "node created";
-
-      //We need to put the node right under the compatible port
-      NodeDataModel *ndm = nodeCrea->nodeDataModel();
-      int nbp = ndm->nPorts(PortType::Out);
-      int pid = 0;
-      for(int i=0;i<nbp;i++)
-      {
-        if (ndm->dataType(PortType::Out,i).id == _connection.dataType().id)
-          pid = i;
-      }
-
-      QPointF pos = nodeCrea->nodeGeometry().portScenePosition(pid,PortType::Out);
-      qInfo() << pos;
-      QPointF evPos = event->scenePos();
-      QPointF newPos = QPointF(evPos.x()-pos.x(),evPos.y()-pos.y());
-      nodeCrea->nodeGraphicsObject().setPos(newPos);
-
-      qInfo() << "node set pos";
-
-      NodeConnectionInteraction interactionCrea(*nodeCrea, _connection, _scene);
-      qInfo() << "interaction created";
-      qInfo() << nodeCrea << interactionCrea.tryConnect();
-      /*
-      if (interactionCrea.tryConnect())
-      {
-        qInfo() << "tryConnect ok";
-        nodeCrea->resetReactionToConnection();
-        qInfo() << "Created!";
-      }
-      */
-    }
-    else
-    {
+    if(!_scene.createNodeOnDrop(modelName,_connection, event->scenePos()))
       _scene.deleteConnection(_connection);
-    }
   }
   else if (node && interaction.tryConnect())
   {
     node->resetReactionToConnection();
-    qInfo() << "Created!";
+    //qInfo() << "Created!";
   }
   else if (_connection.connectionState().requiresPort())
   {

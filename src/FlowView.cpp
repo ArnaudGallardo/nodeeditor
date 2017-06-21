@@ -133,6 +133,7 @@ contextMenuEvent(QContextMenuEvent *event)
       return;
     }
 
+    emit _scene->beforeCreatingNode(modelName);
     auto type = _scene->registry().create(modelName);
 
     if (type)
@@ -274,6 +275,18 @@ keyReleaseEvent(QKeyEvent *event)
   {
     case Qt::Key_Shift:
       setDragMode(QGraphicsView::ScrollHandDrag);
+      break;
+
+    case Qt::Key_D:
+      _scene->deleteSelected();
+      break;
+
+    case Qt::Key_Backspace:
+      _scene->deleteSelected();
+      break;
+
+    case Qt::Key_Delete:
+      _scene->deleteSelected();
       break;
 
     default:
